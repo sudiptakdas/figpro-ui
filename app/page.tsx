@@ -2,8 +2,8 @@ import { Room } from './Room';
 
 export default function Page() {
   return (
-    <Room>
+    <div className=' h-[100vh] w-full flex justify-center items-center'>
       <h1>Hola</h1>
-    </Room>
+    </div>
   );
 }
