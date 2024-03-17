@@ -1,10 +1,17 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import LiveCursors from './cursor/LiveCursors';
 import { useMyPresence, useOthers } from '@/liveblocks.config';
+import CursorChat from './cursor/CursorChat';
+import { CursorMode, CursorState } from '@/types/type';
 
 const Live = () => {
   const others = useOthers();
   const [{ cursor }, updateMyPresence] = useMyPresence() as any;
+
+  // track the state of the cursor (hidden, chat, reaction, reaction selector)
+  const [cursorState, setCursorState] = useState<CursorState>({
+    mode: CursorMode.Hidden,
+  });
 
   const handlePointerMove = useCallback((event: React.PointerEvent) => {
     event.preventDefault();
@@ -22,6 +29,9 @@ const Live = () => {
   }, []);
 
   const handlePointerLeave = useCallback(() => {
+    setCursorState({
+      mode: CursorMode.Hidden,
+    });
     updateMyPresence({
       cursor: null,
       message: null,
@@ -52,6 +62,14 @@ const Live = () => {
     >
       <h1>Live Cursors</h1>
       <LiveCursors others={others} />
+      {cursor && (
+        <CursorChat
+          cursor={cursor}
+          cursorState={cursorState}
+          setCursorState={setCursorState}
+          updateMyPresence={updateMyPresence}
+        />
+      )}
     </div>
   );
 };
